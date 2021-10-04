@@ -2,9 +2,10 @@ var subtitleOctopusInstance = null;
 var playerResizeObserver = null;
 
 //add subtitles when video added
-function addSubtitles() {
-    if (!subtitleOctopusInstance && document.querySelector('.video-js video') && $('#queue a').length > 0 && subtitles.map(s => s.videoUrl).indexOf($('#queue a')[0].href) !== -1) {
-        var subData = subtitles[subtitles.map(s => s.videoUrl).indexOf($('#queue a')[0].href)];
+function addSubtitles(newVidSrc) {
+    var src = newVidSrc ? newVidSrc : ($('#queue a').length > 0 ? $('#queue a')[0].href : null);
+    if (!subtitleOctopusInstance && document.querySelector('.video-js video') && src && subtitles.map(s => s.videoUrl).indexOf(src) !== -1) {
+        var subData = subtitles[subtitles.map(s => s.videoUrl).indexOf(src)];
         //tricksyness to get past worker same-origin limitation (it's on MDN and works in all browsers so I guess it's a deliberate gap?)
         var workerScript = new Blob(["var IMPORT_BASE='https://apothes.is/hosted/video-editing/libass-wasm/'; importScripts('https://apothes.is/hosted/video-editing/libass-wasm/subtitles-octopus-worker.js');"], { type: 'application/javascript' });
         var workerScriptUrl = URL.createObjectURL(workerScript);
@@ -61,7 +62,7 @@ function removeSubtitles() {
 
 addSubtitles();
 VideoJSPlayer.prototype.oldLoad = VideoJSPlayer.prototype.load;
-VideoJSPlayer.prototype.load = function(data) { this.oldLoad(data); addSubtitles(); };
+VideoJSPlayer.prototype.load = function(data) { this.oldLoad(data); addSubtitles(data.id); };
 VideoJSPlayer.prototype.oldDestroy = VideoJSPlayer.prototype.destroy;
 VideoJSPlayer.prototype.destroy = function() { removeSubtitles(); this.oldDestroy(); };
 
