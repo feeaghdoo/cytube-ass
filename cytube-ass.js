@@ -7,9 +7,9 @@ function addSubtitles(newVidSrc) {
     if (!subtitleOctopusInstance && document.querySelector('.video-js video') && src && subtitles.map(s => s.videoUrl).indexOf(src) !== -1) {
         var subData = subtitles[subtitles.map(s => s.videoUrl).indexOf(src)];
         //tricksyness to get past worker same-origin limitation (it's on MDN and works in all browsers so I guess it's a deliberate gap?)
-        var workerScript = new Blob(["var IMPORT_BASE='https://apothes.is/hosted/video-editing/libass-wasm/'; importScripts('https://apothes.is/hosted/video-editing/libass-wasm/subtitles-octopus-worker.js');"], { type: 'application/javascript' });
+        var workerScript = new Blob(["var IMPORT_BASE='" + subtitlesWebWorkersPrefix + "/'; importScripts('" + subtitlesWebWorkersPrefix + "/subtitles-octopus-worker.js');"], { type: 'application/javascript' });
         var workerScriptUrl = URL.createObjectURL(workerScript);
-        var legacyWorkerScript = new Blob(["var IMPORT_BASE='https://apothes.is/hosted/video-editing/libass-wasm/'; importScripts('https://apothes.is/hosted/video-editing/libass-wasm/subtitles-octopus-worker-legacy.js');"], { type: 'application/javascript' });
+        var legacyWorkerScript = new Blob(["var IMPORT_BASE='" + subtitlesWebWorkersPrefix + "/'; importScripts('" + subtitlesWebWorkersPrefix + "/subtitles-octopus-worker-legacy.js');"], { type: 'application/javascript' });
         var legacyWorkerScriptUrl = URL.createObjectURL(legacyWorkerScript);
         var options = {
             video: document.querySelector('.video-js video'), // HTML5 video element
@@ -70,7 +70,7 @@ VideoJSPlayer.prototype.destroy = function() { removeSubtitles(); this.oldDestro
 $("#mediaurl").keyup(function() {
     var editSubs = false;
     try {
-        if (parseMediaLink($("#mediaurl").val()).type === "fi" || parseMediaLink($("#mediaurl").val()).type === "gd") {
+        if (parseMediaLink($("#mediaurl").val()).type === "fi" || parseMediaLink($("#mediaurl").val()).type === "gd" || parseMediaLink($("#mediaurl").val()).type === "cm") {
             editSubs = true;
         }
     } catch (error) {
@@ -124,12 +124,12 @@ $("#queue_next, #queue_end").click(function() {
         //remove old subtitles and old versions of same subtitle
         subtitles = subtitles.filter(function(s) { s.timestamp + 86400 > Date.now() && s.videoUrl != newSub.videoUrl});
         subtitles.push(newSub);
-        editJsLiteral(87, JSON.stringify(subtitles));
+        editJsLiteral(editableVariableLineNums.subtitles, JSON.stringify(subtitles));
         $("#addfromurl-subparams").remove();
     }
         
     if (fontUrlVal && fontUrlVal !== '') {
-        editJsLiteral(88, JSON.stringify(fontUrlVal.split('\n')));
+        editJsLiteral(editableVariableLineNums.subtitleFonts, JSON.stringify(fontUrlVal.split('\n')));
     }
 });
 
