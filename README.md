@@ -15,4 +15,4 @@ var editableVariableLineNums = {subtitles: 0, subtitleFonts: 1};
 var subtitlesWebWorkersPrefix = "https://example.com/libs/cytube-ass/libass-wasm";
 ```
 
-and change the numbers of `var editableVariableLineNums = {subtitles: 0, subtitleFonts: 1};` to be the line numbers in your channel JS that have `var subtitles` and `var subtitleFonts`, with 1 subtracted from each (so if `var subtitleFonts` is on line 5, it should be `subtitles: 4`), and change `subtitlesWebWorkersPrefix` to be the path to the libass-wasm wherever you uploaded it.
+and change the numbers of `var editableVariableLineNums = {subtitles: 0, subtitleFonts: 1};` to be the line numbers in your channel JS that have `var subtitles` and `var subtitleFonts`, with 1 subtracted from each (so if `var subtitleFonts` is on line 5, it should be `subtitles: 4`), and change `subtitlesWebWorkersPrefix` to be the path to the libass-wasm folder wherever you uploaded it.
