@@ -18,8 +18,7 @@ function addSubtitles(newVidSrc) {
             timeOffset: subData.timeOffset,
             workerUrl: workerScriptUrl, // Link to file "libassjs-worker.js"
             legacyWorkerUrl: legacyWorkerScriptUrl, // Link to non-WebAssembly worker
-            lossyRender: true,
-            renderAhead: 20
+            renderMode: "lossy"
         };
         subtitleOctopusInstance = new SubtitlesOctopus(options);
         URL.revokeObjectURL(workerScriptUrl);
